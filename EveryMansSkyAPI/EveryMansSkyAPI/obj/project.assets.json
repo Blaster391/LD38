@@ -9701,10 +9701,10 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Robert\\Documents\\LD38\\Web API\\EveryMansSkyAPI\\EveryMansSkyAPI\\EveryMansSkyAPI.csproj",
+      "projectUniqueName": "D:\\Robert\\Documents\\LD38\\EveryMansSkyAPI\\EveryMansSkyAPI\\EveryMansSkyAPI.csproj",
       "projectName": "EveryMansSkyAPI",
-      "projectPath": "D:\\Robert\\Documents\\LD38\\Web API\\EveryMansSkyAPI\\EveryMansSkyAPI\\EveryMansSkyAPI.csproj",
-      "outputPath": "D:\\Robert\\Documents\\LD38\\Web API\\EveryMansSkyAPI\\EveryMansSkyAPI\\obj\\",
+      "projectPath": "D:\\Robert\\Documents\\LD38\\EveryMansSkyAPI\\EveryMansSkyAPI\\EveryMansSkyAPI.csproj",
+      "outputPath": "D:\\Robert\\Documents\\LD38\\EveryMansSkyAPI\\EveryMansSkyAPI\\obj\\",
       "projectStyle": "PackageReference",
       "originalTargetFrameworks": [
         "netcoreapp1.1"
