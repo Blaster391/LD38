@@ -54,8 +54,13 @@ namespace EveryMansSkyAPI.Controllers
             var planet = RavenContext.LoadById<Planet>(planetId);
             if (planet != null)
             {
-                if (planet.CreateByUserId != player.Id)
+                if (planet.CreatedByUserId != player.Id)
                 {
+                    if (player.PlanetsDiscovered == null)
+                    {
+                        player.PlanetsDiscovered = new List<string>();
+                    }
+
                     if (!player.PlanetsDiscovered.Contains(planet.Id))
                     {
                         player.PlanetsDiscovered.Add(planet.Id);

@@ -6,8 +6,8 @@ public class Planet {
 
     public string Id { get; set; }
     public string Name { get; set; }
-    public string CreateByUserId { get; set; }
-    public string CreateByUsername { get; set; }
+    public string CreatedByUserId { get; set; }
+    public string CreatedByUsername { get; set; }
     public PlanetType Type { get; set; }
     public float Size { get; set; }
     public float ColourRed { get; set; }

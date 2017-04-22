@@ -94,6 +94,11 @@ public class PlayerManager : MonoBehaviour
 
     private Player JsonToPlayer(JSONObject json)
     {
+        if (json["id"] == null)
+        {
+            return null;
+        }
+
         Player player = new Player
         {
             Id = json["id"].ToString(),
@@ -135,57 +140,57 @@ public class PlayerManager : MonoBehaviour
 
 	    if (Player != null)
 	    {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                TogglePlanetCreationMenu();
-            }
-            if (!PlanetCreationPanel.activeSelf)
-            {
-                float speed; 
-                if (Input.GetKey(KeyCode.LeftShift))
-                {
-                    speed = PlayerSprintSpeed;
-                }
-                else
-                {
-                    speed = PlayerBaseSpeed;
-                }
+	        if (Input.GetKeyDown(KeyCode.Space))
+	        {
+	            TogglePlanetCreationMenu();
+	        }
+	        if (!PlanetCreationPanel.activeSelf)
+	        {
+	            float speed;
+	            if (Input.GetKey(KeyCode.LeftShift))
+	            {
+	                speed = PlayerSprintSpeed;
+	            }
+	            else
+	            {
+	                speed = PlayerBaseSpeed;
+	            }
 
-                if (Input.GetKey(KeyCode.W))
-                {
-                    gameObject.transform.Translate(Vector3.forward * speed);
-                }
-                if (Input.GetKey(KeyCode.S))
-                {
-                    gameObject.transform.Translate(Vector3.back * speed);
-                }
-                if (Input.GetKey(KeyCode.D))
-                {
-                    gameObject.transform.Translate(Vector3.right * speed);
-                }
-                if (Input.GetKey(KeyCode.A))
-                {
-                    gameObject.transform.Translate(Vector3.left * speed);
-                }
-                if (Input.GetKey(KeyCode.Z))
-                {
-                    gameObject.transform.Translate(Vector3.up * speed);
-                }
-                if (Input.GetKey(KeyCode.X))
-                {
-                    gameObject.transform.Translate(Vector3.down * speed);
-                }
-                if (Input.GetMouseButtonDown(0))
-                {
-                    AttemptDiscoverPlanet();
-                }
+	            if (Input.GetKey(KeyCode.W))
+	            {
+	                gameObject.transform.Translate(Vector3.forward * speed);
+	            }
+	            if (Input.GetKey(KeyCode.S))
+	            {
+	                gameObject.transform.Translate(Vector3.back * speed);
+	            }
+	            if (Input.GetKey(KeyCode.D))
+	            {
+	                gameObject.transform.Translate(Vector3.right * speed);
+	            }
+	            if (Input.GetKey(KeyCode.A))
+	            {
+	                gameObject.transform.Translate(Vector3.left * speed);
+	            }
+	            if (Input.GetKey(KeyCode.Z))
+	            {
+	                gameObject.transform.Translate(Vector3.up * speed);
+	            }
+	            if (Input.GetKey(KeyCode.X))
+	            {
+	                gameObject.transform.Translate(Vector3.down * speed);
+	            }
+	            if (Input.GetMouseButtonDown(0))
+	            {
+	                AttemptDiscoverPlanet();
+	            }
 
-                _yaw += PlayerRotateSpeedH * Input.GetAxis("Mouse X");
-                _pitch -= PlayerRotateSpeedV * Input.GetAxis("Mouse Y");
+	            _yaw += PlayerRotateSpeedH * Input.GetAxis("Mouse X");
+	            _pitch -= PlayerRotateSpeedV * Input.GetAxis("Mouse Y");
 
-                transform.eulerAngles = new Vector3(_pitch, _yaw, 0.0f);
-            }
-        }
+	            transform.eulerAngles = new Vector3(_pitch, _yaw, 0.0f);
+	        }
+	    }
 	}
 
     private void AttemptDiscoverPlanet()

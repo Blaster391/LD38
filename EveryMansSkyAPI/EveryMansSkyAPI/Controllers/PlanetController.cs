@@ -15,11 +15,11 @@ namespace EveryMansSkyAPI.Controllers
     {
         // GET: api/values
         [HttpGet]
-        public IEnumerable<Planet> Get(DateTime lastModified, int page = 0)
+        public IEnumerable<Planet> Get(DateTime dateFrom, int page = 0)
         {
             using (var session = RavenContext.Store.OpenSession())
             {
-                return session.Query<Planet>().Take(128).Skip(128 * page).ToList();
+                return session.Query<Planet>().Where(x => x.LastModified > dateFrom).Take(128).Skip(128 * page).ToList();
             }
         }
 
@@ -34,13 +34,24 @@ namespace EveryMansSkyAPI.Controllers
         [HttpPost]
         public void Post([FromBody]Planet value)
         {
+            if (Math.Abs(value.Size) < 0.000001)
+            {
+                return;
+            }
+
             //VALIDATE
-            var creator = RavenContext.LoadById<Player>(value.CreateByUserId);
+            var creator = RavenContext.LoadById<Player>(value.CreatedByUserId);
             if (creator == null)
                 return;
-            value.CreateByUsername = creator.Username;
+            value.CreatedByUsername = creator.Username;
+            value.LastModified = DateTime.Now;
 
             RavenContext.Save(value);
+            if (creator.PlanetsCreated == null)
+            {
+                creator.PlanetsCreated = new List<string>();
+            }
+
             if (!creator.PlanetsCreated.Contains(value.Id))
             {
                 creator.PlanetsCreated.Add(value.Id);
