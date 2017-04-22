@@ -41,7 +41,7 @@ namespace EveryMansSkyAPI.Controllers
             value.CreateByUsername = creator.Username;
 
             RavenContext.Save(value);
-            if (creator.PlanetsCreated.All(x => x != value.Id))
+            if (!creator.PlanetsCreated.Contains(value.Id))
             {
                 creator.PlanetsCreated.Add(value.Id);
                 RavenContext.Save(creator);

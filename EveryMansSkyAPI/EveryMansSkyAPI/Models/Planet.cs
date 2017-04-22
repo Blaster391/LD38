@@ -21,6 +21,8 @@ namespace EveryMansSkyAPI.Models
         public float RotationX { get; set; }
         public float RotationY { get; set; }
         public float RotationZ { get; set; }
+        public DateTime LastModified { get; set; }
+        public int Upvotes { get; set; }
 
     }
 }
