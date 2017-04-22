@@ -19,7 +19,7 @@ namespace EveryMansSkyAPI.Raven
         {
             Store = new DocumentStore
             {
-            
+
                 DefaultDatabase = "EveryMansSky"
             };
 

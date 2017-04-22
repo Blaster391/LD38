@@ -15,7 +15,7 @@ namespace EveryMansSkyAPI.Controllers
     {
         // GET: api/values
         [HttpGet]
-        public IEnumerable<Planet> Get(int page = 0)
+        public IEnumerable<Planet> Get(DateTime lastModified, int page = 0)
         {
             using (var session = RavenContext.Store.OpenSession())
             {

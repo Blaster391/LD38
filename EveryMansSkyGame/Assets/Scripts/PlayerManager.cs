@@ -9,13 +9,25 @@ public class PlayerManager : MonoBehaviour
 {
 
     public GameObject PlayerCreationPanel;
+    public GameObject PlanetCreationPanel;
     public InputField PlayerUsernameField;
 
     public Player Player;
+    public float PlayerBaseSpeed;
+    public float PlayerSprintSpeed;
+
+    public float PlayerRotateSpeedH;
+    public float PlayerRotateSpeedV;
+
+    private float _yaw;
+    private float _pitch;
+
 	// Use this for initialization
 	void Start ()
 	{
-	    if (File.Exists("user.usr"))
+        PlayerCreationPanel.SetActive(false);
+        PlanetCreationPanel.SetActive(false);
+        if (File.Exists("user.usr"))
 	    {
             StartCoroutine(LoadUserFromFile());
 	    }
@@ -58,6 +70,9 @@ public class PlayerManager : MonoBehaviour
             {
                 file.WriteLine(id);
             }
+
+            PlayerCreationPanel.SetActive(false);
+            Cursor.visible = false;
         }
     }
 
@@ -71,26 +86,36 @@ public class PlayerManager : MonoBehaviour
             yield return www;
 
             Player = JsonToPlayer(new JSONObject(www.text));
+            PlayerCreationPanel.SetActive(false);
+            Cursor.visible = false;
         }
 
     }
 
     private Player JsonToPlayer(JSONObject json)
     {
-        Player player = new Player();
-        player.Id = json["id"].ToString();
-        player.Username = json["username"].ToString();
-
-        player.PlanetsCreated = new List<string>();
-        foreach (JSONObject planet in json["planetsCreated"].list)
+        Player player = new Player
         {
-            player.PlanetsCreated.Add(planet.ToString());
+            Id = json["id"].ToString(),
+            Username = json["username"].ToString(),
+            PlanetsCreated = new List<string>()
+        };
+
+        if (json["planetsCreated"].list != null)
+        {
+            foreach (JSONObject planet in json["planetsCreated"].list)
+            {
+                player.PlanetsCreated.Add(planet.ToString());
+            }
         }
 
-        player.PlanetsDiscovered = new List<string>();
-        foreach (JSONObject planet in json["planetsDiscovered"].list)
+        if (json["planetsDiscovered"].list != null)
         {
-            player.PlanetsDiscovered.Add(planet.ToString());
+            player.PlanetsDiscovered = new List<string>();
+            foreach (JSONObject planet in json["planetsDiscovered"].list)
+            {
+                player.PlanetsDiscovered.Add(planet.ToString());
+            }
         }
 
         return player;
@@ -110,7 +135,75 @@ public class PlayerManager : MonoBehaviour
 
 	    if (Player != null)
 	    {
-	        //Controls and stuff yo
-	    }
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                TogglePlanetCreationMenu();
+            }
+            if (!PlanetCreationPanel.activeSelf)
+            {
+                float speed; 
+                if (Input.GetKey(KeyCode.LeftShift))
+                {
+                    speed = PlayerSprintSpeed;
+                }
+                else
+                {
+                    speed = PlayerBaseSpeed;
+                }
+
+                if (Input.GetKey(KeyCode.W))
+                {
+                    gameObject.transform.Translate(Vector3.forward * speed);
+                }
+                if (Input.GetKey(KeyCode.S))
+                {
+                    gameObject.transform.Translate(Vector3.back * speed);
+                }
+                if (Input.GetKey(KeyCode.D))
+                {
+                    gameObject.transform.Translate(Vector3.right * speed);
+                }
+                if (Input.GetKey(KeyCode.A))
+                {
+                    gameObject.transform.Translate(Vector3.left * speed);
+                }
+                if (Input.GetKey(KeyCode.Z))
+                {
+                    gameObject.transform.Translate(Vector3.up * speed);
+                }
+                if (Input.GetKey(KeyCode.X))
+                {
+                    gameObject.transform.Translate(Vector3.down * speed);
+                }
+                if (Input.GetMouseButtonDown(0))
+                {
+                    AttemptDiscoverPlanet();
+                }
+
+                _yaw += PlayerRotateSpeedH * Input.GetAxis("Mouse X");
+                _pitch -= PlayerRotateSpeedV * Input.GetAxis("Mouse Y");
+
+                transform.eulerAngles = new Vector3(_pitch, _yaw, 0.0f);
+            }
+        }
 	}
+
+    private void AttemptDiscoverPlanet()
+    {
+        
+    }
+
+    private void TogglePlanetCreationMenu()
+    {
+        if (PlanetCreationPanel.activeSelf)
+        {
+            PlanetCreationPanel.SetActive(false);
+            Cursor.visible = false;
+        }
+        else
+        {
+            PlanetCreationPanel.SetActive(true);
+            Cursor.visible = true;
+        }
+    }
 }
