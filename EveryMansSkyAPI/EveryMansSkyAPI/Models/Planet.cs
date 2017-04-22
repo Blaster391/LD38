@@ -9,7 +9,8 @@ namespace EveryMansSkyAPI.Models
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public string CreateByUser { get; set; }
+        public string CreateByUserId { get; set; }
+        public string CreateByUsername { get; set; }
         public PlanetType Type { get; set; }
         public float ColourRed { get; set; }
         public float ColourGreen { get; set; }

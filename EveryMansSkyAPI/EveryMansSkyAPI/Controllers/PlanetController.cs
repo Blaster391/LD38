@@ -15,16 +15,19 @@ namespace EveryMansSkyAPI.Controllers
     {
         // GET: api/values
         [HttpGet]
-        public IEnumerable<Planet> Get(int page)
+        public IEnumerable<Planet> Get(int page = 0)
         {
-            return null;
+            using (var session = RavenContext.Store.OpenSession())
+            {
+                return session.Query<Planet>().Take(128).Skip(128 * page).ToList();
+            }
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public string Get(string id)
+        public Planet Get(string id)
         {
-            return "value";
+            return RavenContext.LoadById<Planet>(id);
         }
 
         // POST api/values
@@ -32,9 +35,10 @@ namespace EveryMansSkyAPI.Controllers
         public void Post([FromBody]Planet value)
         {
             //VALIDATE
-            var creator = RavenContext.LoadById<Player>(value.CreateByUser);
+            var creator = RavenContext.LoadById<Player>(value.CreateByUserId);
             if (creator == null)
                 return;
+            value.CreateByUsername = creator.Username;
 
             RavenContext.Save(value);
             if (creator.PlanetsCreated.All(x => x != value.Id))
@@ -42,18 +46,6 @@ namespace EveryMansSkyAPI.Controllers
                 creator.PlanetsCreated.Add(value.Id);
                 RavenContext.Save(creator);
             }
-        }
-
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
         }
     }
 }
