@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlanetHolder : MonoBehaviour
 {
+    public static GameObject discoveredBy;
+
 
     public Planet Planet;
     public TextMesh PlanetText;
@@ -36,8 +38,14 @@ public class PlanetHolder : MonoBehaviour
 
     public void DiscoverPlanet(Player player)
     {
-        var notifiaction = Instantiate(DiscoveredByPrefab);
-        notifiaction.GetComponent<DiscoveredByScript>().Begin(Planet.Name, Planet.CreatedByUsername);
+        if (discoveredBy != null)
+        {
+            Destroy(discoveredBy);
+        }
+
+
+        discoveredBy = Instantiate(DiscoveredByPrefab);
+        discoveredBy.GetComponent<DiscoveredByScript>().Begin(Planet.Name, Planet.CreatedByUsername);
 
         if (player.PlanetsCreated != null && !player.PlanetsCreated.Contains(Planet.Id))
         {

@@ -30,7 +30,7 @@ public class PlanetManager : MonoBehaviour {
                 StartCoroutine(PlanetRecentLoadingLoop());
             }
             catch{}
-            yield return new WaitForSeconds(120);
+            yield return new WaitForSeconds(400);
         }
     }
 
@@ -324,7 +324,7 @@ public class PlanetManager : MonoBehaviour {
         while (true)
         {
             yield return GetPlanets(DateTime.MinValue);
-            yield return new WaitForSeconds(60);
+            yield return new WaitForSeconds(120);
         }
     }
 
@@ -335,7 +335,7 @@ public class PlanetManager : MonoBehaviour {
         {
             yield return GetPlanets(lastFetchTime);
             lastFetchTime = DateTime.Now;
-            yield return new WaitForSeconds(5);
+            yield return new WaitForSeconds(10);
         }
     }
 

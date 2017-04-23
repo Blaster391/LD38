@@ -14,7 +14,7 @@ public class DiscoveredByScript : MonoBehaviour
     public void Begin(string planetName, string playerName)
     {
         var canvas = GameObject.Find("Canvas");
-        gameObject.transform.parent = canvas.transform;
+        gameObject.transform.SetParent(canvas.transform);
         gameObject.transform.localPosition = new Vector3(0,0,0);
 
         PlanetName.text = planetName;

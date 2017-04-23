@@ -276,7 +276,6 @@ public class PlayerManager : MonoBehaviour
         Ray ray = new Ray(transform.position, gameObject.transform.forward);
         if (Physics.Raycast(ray, out hit))
         {
-            Debug.Log("Hit");
             if (hit.distance < discoverRange)
             {
                 if (hit.collider.gameObject.GetComponent<PlanetHolder>() != null)
