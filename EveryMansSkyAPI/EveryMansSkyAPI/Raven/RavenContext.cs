@@ -19,7 +19,7 @@ namespace EveryMansSkyAPI.Raven
         {
             Store = new DocumentStore
             {
-
+                Url = "http://localhost:8080",
                 DefaultDatabase = "EveryMansSky"
             };
 

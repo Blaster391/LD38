@@ -32,8 +32,6 @@ public class PlanetManager : MonoBehaviour {
             catch{}
             yield return new WaitForSeconds(120);
         }
-
-
     }
 
 
@@ -48,6 +46,7 @@ public class PlanetManager : MonoBehaviour {
 
         if (PlanetCreationPanel.activeSelf)
 	    {
+            Cursor.visible = true;
             var color = new Color
             {
                 r = PlanetColourRedSlider.value,
@@ -123,6 +122,28 @@ public class PlanetManager : MonoBehaviour {
         var planetName = PlanetNameField.text;
         if (planetName.Trim() == string.Empty)
             return;
+
+        var swears = new List<string>
+            {
+                "fuck",
+                "shit",
+                "nigga",
+                "nigger",
+                "cunt",
+                "gay",
+                "faggot",
+                "huskar you okay my buddie?",
+                "cock",
+                "wanker",
+                "slut",
+                "niggg"
+            };
+        foreach (var swear in swears)
+        {
+            if (planetName.ToLower().Contains(swear))
+                return;
+        }
+        
 
         var planet = GeneratePlanetObject();
         var position = Player.transform.position + Player.transform.forward * WorldSpawnDistance;

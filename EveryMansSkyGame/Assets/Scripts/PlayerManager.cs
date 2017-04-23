@@ -12,6 +12,7 @@ public class PlayerManager : MonoBehaviour
     public GameObject PlayerCreationSubPanel;
     public GameObject PlanetCreationPanel;
     public GameObject Crosshair;
+    public GameObject ExitMenu;
     public InputField PlayerUsernameField;
     public InputField PlanetNameField;
     public Player Player;
@@ -24,9 +25,12 @@ public class PlayerManager : MonoBehaviour
     private float _yaw;
     private float _pitch;
 
+    public Text ErrorText;
+
 	// Use this for initialization
 	void Start ()
 	{
+        Cursor.lockState = CursorLockMode.Confined;
         PlayerCreationPanel.SetActive(false);
         PlanetCreationPanel.SetActive(false);
         Crosshair.SetActive(false);
@@ -43,12 +47,24 @@ public class PlayerManager : MonoBehaviour
 
     public void CreatePlayerFromPanel()
     {
-        if (PlayerUsernameField.text.Trim() == string.Empty)
+        var name = PlayerUsernameField.text.Trim();
+        name = name.Replace(" ", "-");
+        name = name.Replace("\"", "");
+
+        if (name == string.Empty)
         {
+            ErrorText.text = "Please enter a name";
             return;
         }
+
+        if (name.Length > 100)
+        {
+            ErrorText.text = "Name too long";
+            return;
+        }
+
         //Validate fucking swearwords????
-        StartCoroutine(CreatePlayer(PlayerUsernameField.text));
+        StartCoroutine(CreatePlayer(name));
     }
 
     public IEnumerator CreatePlayer(string username)
@@ -69,7 +85,7 @@ public class PlayerManager : MonoBehaviour
                 PlanetsDiscovered = new List<string>()
             };
 
-            using (System.IO.StreamWriter file = new System.IO.StreamWriter("user.usr",false))
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter("user.usr", false))
             {
                 file.WriteLine(id);
             }
@@ -78,6 +94,12 @@ public class PlayerManager : MonoBehaviour
             Crosshair.SetActive(true);
             Cursor.visible = false;
         }
+        else
+        {
+            ErrorText.text = www.text;
+        }
+        
+        
     }
 
     private IEnumerator LoadUserFromFile()
@@ -169,7 +191,11 @@ public class PlayerManager : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update () {
+    void Update ()
+    {
+        if (ExitMenu.activeSelf)
+            return;
+
 
 	    if (Player != null)
 	    {

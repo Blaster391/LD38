@@ -12,9 +12,11 @@ using Raven.Client;
 
 namespace EveryMansSkyAPI.Controllers
 {
+
     [Route("api/[controller]")]
     public class PlayerController : Controller
     {
+
         // GET api/values/5
         [HttpGet("{id}")]
         public Player Get(string id)
@@ -25,13 +27,30 @@ namespace EveryMansSkyAPI.Controllers
         [HttpGet("create")]
         public string Create(string username)
         {
-            //VALIDATE
+            var name = username.Trim();
+            if (name == string.Empty)
+            {
+                return "Please enter a name";
+            }
+
+            if (name.Length > 100)
+                return "Name too long";
+
+            var swears = Swears.GetSwears();
+            foreach (var swear in swears)
+            {
+                if (name.ToLower().Contains(swear))
+                {
+                    return "Invalid name";
+                }
+            }
+            
             using (var session = RavenContext.Store.OpenSession())
             {
-                var check = session.Query<Player>().FirstOrDefault(x => x.Username == username);
+                var check = session.Query<Player>().FirstOrDefault(x => x.Username == name);
                 if (check != null)
                 {
-                    return "FAILED";
+                    return "Username taken";
                 }
             }
 
@@ -39,7 +58,7 @@ namespace EveryMansSkyAPI.Controllers
             Player player = new Player
             {
                 Id = id,
-                Username = username
+                Username = name
             };
             RavenContext.Save(player);
 

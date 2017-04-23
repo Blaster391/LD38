@@ -22,11 +22,13 @@ public class ExitScript : MonoBehaviour
     {
         if (ExitMenu.activeSelf)
         {
+            Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = false;
             ExitMenu.SetActive(false);
         }
         else
         {
+            Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             ExitMenu.SetActive(true);
         }

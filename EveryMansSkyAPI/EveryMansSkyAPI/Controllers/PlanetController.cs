@@ -34,7 +34,16 @@ namespace EveryMansSkyAPI.Controllers
         [HttpPost]
         public void Post([FromBody]Planet value)
         {
-            if (Math.Abs(value.Size) < 0.000001)
+            var swears = Swears.GetSwears();
+            foreach (var swear in swears)
+            {
+                if (value.Name.ToLower().Contains(swear))
+                {
+                    return;
+                }
+            }
+
+            if (Math.Abs(value.Size) < 1)
             {
                 return;
             }
