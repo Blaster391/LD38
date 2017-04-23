@@ -55,6 +55,9 @@ public class PlanetManager : MonoBehaviour {
         if (planetName.Trim() == string.Empty)
             return;
 
+        if (planetName.Length > 140)
+            return;
+
         var color = new Color
         {
             r = PlanetColourRedSlider.value,
@@ -137,7 +140,8 @@ public class PlanetManager : MonoBehaviour {
 
         if (planet.Type == PlanetType.Ringed)
         {
-            var ringRender =  newPlanet.transform.FindChild("Ring").GetComponent<Renderer>();
+            var ring = newPlanet.transform.FindChild("ring");
+            var ringRender =  ring.GetComponent<Renderer>();
             ringRender.material.color = color;
         }
 
@@ -251,6 +255,12 @@ public class PlanetManager : MonoBehaviour {
         parsedPlanet.RotationZ = float.Parse(elementObject["rotationZ"]);
 
         parsedPlanet.Upvotes = int.Parse(elementObject["upvotes"]);
+
+        var typeInt = int.Parse(elementObject["type"]);
+        if (typeInt == 1)
+        {
+            parsedPlanet.Type = PlanetType.Ringed;
+        }
 
         return parsedPlanet;
     }

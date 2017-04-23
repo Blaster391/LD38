@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 namespace EveryMansSkyAPI.Models
 {
     public class PlayerScore
-    {
-        public string Id;
-        public string PlayerUsername;
-        public int PlanetsDiscovered;
-        public int PlanetsCreated;
+    { 
+        public string PlayerUsername { get; set; }
+        public int PlanetsDiscovered { get; set; }
+        public int PlanetsCreated { get; set; }
     }
 }

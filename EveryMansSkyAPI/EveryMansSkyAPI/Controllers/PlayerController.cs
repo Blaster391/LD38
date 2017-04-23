@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using EveryMansSkyAPI.Models;
 using EveryMansSkyAPI.Raven;
+using EveryMansSkyAPI.Raven.Indexes;
 using Microsoft.AspNetCore.Mvc;
+using Raven.Client;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -70,6 +72,58 @@ namespace EveryMansSkyAPI.Controllers
             }
 
             return player.PlanetsDiscovered.Count;
+        }
+
+        [HttpGet("score/discovered")]
+        public List<PlayerScore> GetHighScoresPlanetsDiscovered(int page = 0)
+        {
+            using (var session = RavenContext.Store.OpenSession())
+            {
+                    var topPlayers = session.Query<PlayerScore, ScoreMap>()
+                        .OrderByDescending(x => x.PlanetsDiscovered)
+                        .As<Player>()
+                        .Take(100)
+                        .ToList();
+
+                List<PlayerScore> topScores = new List<PlayerScore>();
+                foreach (var player in topPlayers)
+                {
+                    topScores.Add(new PlayerScore
+                    {
+                        PlayerUsername = player.Username,
+                        PlanetsCreated = player.PlanetsCreated?.Count ?? 0,
+                        PlanetsDiscovered = player.PlanetsDiscovered?.Count ?? 0
+                    });
+                   
+                }
+                return topScores;
+            }
+        }
+
+        [HttpGet("score/created")]
+        public List<PlayerScore> GetHighScoresPlanetsCreated(int page = 0)
+        {
+            using (var session = RavenContext.Store.OpenSession())
+            {
+                var topPlayers = session.Query<PlayerScore, ScoreMap>()
+                    .OrderByDescending(x => x.PlanetsCreated)
+                    .As<Player>()
+                    .Take(100)
+                    .ToList();
+
+                List<PlayerScore> topScores = new List<PlayerScore>();
+                foreach (var player in topPlayers)
+                {
+                    topScores.Add(new PlayerScore
+                    {
+                        PlayerUsername = player.Username,
+                        PlanetsCreated = player.PlanetsCreated?.Count ?? 0,
+                        PlanetsDiscovered = player.PlanetsDiscovered?.Count ?? 0
+                    });
+
+                }
+                return topScores;
+            }
         }
     }
 }

@@ -7,26 +7,17 @@ using Raven.Client.Indexes;
 
 namespace EveryMansSkyAPI.Raven.Indexes
 {
-    public class ScoreMap : AbstractIndexCreationTask<Player, ScoreMap.Result>
+    public class ScoreMap : AbstractIndexCreationTask<Player, PlayerScore>
     {
-        public class Result
-        {
-            public string PlayerId { get; set; }
-            public string Username { get; set; }
-            public int PlanetsDiscovered { get; set; }
-            public int PlanetsCreated { get; set; }
-
-        }
 
         public ScoreMap()
         {
             Map = players => from player in players
                               select new
                               {
-                                  PlayerId = player.Id,
-                                  Username = player.Username,
-                                  PlanetsDiscovered = player.PlanetsDiscovered.Count,
-                                  PlanetsCreated = player.PlanetsCreated.Count
+                                  PlayerUsername = player.Username,
+                                  PlanetsDiscovered = (player.PlanetsDiscovered == null) ? 0 : player.PlanetsDiscovered.Count,
+                                  PlanetsCreated = (player.PlanetsCreated == null) ? 0 : player.PlanetsCreated.Count
                               };
 
         }

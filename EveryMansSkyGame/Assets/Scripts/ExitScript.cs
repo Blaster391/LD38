@@ -8,16 +8,24 @@ public class ExitScript : MonoBehaviour
 	
 	// Update is called once per frame
 	void Update () {
-
-	    if (Input.GetKeyUp(KeyCode.Escape))
+        ExitMenu.SetActive(false);
+        if (Input.GetKeyUp(KeyCode.Escape))
 	    {
-	        ShowExitMenu();
+	        ShowHideExitMenu();
 	    }
 	}
 
-    public void ShowExitMenu()
+    public void ShowHideExitMenu()
     {
-        ExitMenu.SetActive(true);
+        if (ExitMenu.activeSelf)
+        {
+            ExitMenu.SetActive(false);
+        }
+        else
+        {
+            ExitMenu.SetActive(true);
+        }
+
     }
 
     public void HideExitMenu()

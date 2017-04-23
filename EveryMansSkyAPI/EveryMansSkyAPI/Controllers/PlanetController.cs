@@ -39,6 +39,9 @@ namespace EveryMansSkyAPI.Controllers
                 return;
             }
 
+            if (value.Name.Length > 140)
+                return;
+
             //VALIDATE
             var creator = RavenContext.LoadById<Player>(value.CreatedByUserId);
             if (creator == null)
