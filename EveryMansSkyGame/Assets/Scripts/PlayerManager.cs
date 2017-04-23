@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class PlayerManager : MonoBehaviour
@@ -289,6 +290,7 @@ public class PlayerManager : MonoBehaviour
 
     private void TogglePlanetCreationMenu()
     {
+        EventSystem.current.SetSelectedGameObject(null);
         if (PlanetCreationPanel.activeSelf)
         {
             PlanetCreationPanel.SetActive(false);

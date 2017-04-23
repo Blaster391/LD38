@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Debug = UnityEngine.Debug;
 
@@ -101,6 +102,7 @@ public class PlanetManager : MonoBehaviour {
     public GameObject PlanetCreationPanel;
     public GameObject ColourPickerPreviewPanel;
     public InputField PlanetNameField;
+    public GameObject Crosshair;
     public Toggle PlanetRingToggle;
     public Toggle PreviewToggle;
     public Slider PlanetColourRedSlider;
@@ -110,8 +112,8 @@ public class PlanetManager : MonoBehaviour {
     public Slider PlanetRotationXSlider;
     public Slider PlanetRotationYSlider;
     public Slider PlanetRotationZSlider;
-
     public Slider PlanetSizeSlider;
+
     public PlayerManager Player;
     public float WorldSizeMod = 10;
     public float WorldSpawnDistance = 10;
@@ -136,7 +138,8 @@ public class PlanetManager : MonoBehaviour {
                 "cock",
                 "wanker",
                 "slut",
-                "niggg"
+                "niggg",
+                "dick"
             };
         foreach (var swear in swears)
         {
@@ -171,6 +174,7 @@ public class PlanetManager : MonoBehaviour {
         }
         PlanetCreationPanel.SetActive(false);
         Cursor.visible = false;
+        Crosshair.SetActive(true);
     }
 
     private Planet GeneratePlanetObject()

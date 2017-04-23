@@ -22,7 +22,8 @@ namespace EveryMansSkyAPI.Models
                 "cock",
                 "wanker",
                 "slut",
-                "niggg"
+                "niggg",
+                "dick"
             };
         }
     }
