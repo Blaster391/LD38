@@ -20,6 +20,10 @@ public class PlanetManager : MonoBehaviour {
     {
         while (true)
         {
+            while (Player.Player == null)
+            {
+                yield return new WaitForEndOfFrame();
+            }
             try
             {
                 StartCoroutine(PlanetLoaderLoop());
@@ -258,8 +262,6 @@ public class PlanetManager : MonoBehaviour {
     {
         var headers = new Dictionary<string, string>();
         headers.Add("Content-Type", "application/json");
-
-        Debug.Log(planet.CreatedByUserId);
 
         string json = "{";
         json += WebApiAccess.ToJsonElement("Id", planet.Id.Replace("\"", ""));

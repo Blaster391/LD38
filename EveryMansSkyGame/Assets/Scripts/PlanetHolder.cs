@@ -8,6 +8,8 @@ public class PlanetHolder : MonoBehaviour
     public Planet Planet;
     public TextMesh PlanetText;
 
+    public GameObject DiscoveredByPrefab;
+
     public Material YellowText;
     public Material GreenText;
     public Material NormalText;
@@ -34,6 +36,9 @@ public class PlanetHolder : MonoBehaviour
 
     public void DiscoverPlanet(Player player)
     {
+        var notifiaction = Instantiate(DiscoveredByPrefab);
+        notifiaction.GetComponent<DiscoveredByScript>().Begin(Planet.Name, Planet.CreatedByUsername);
+
         if (player.PlanetsCreated != null && !player.PlanetsCreated.Contains(Planet.Id))
         {
             if (player.PlanetsDiscovered == null)
