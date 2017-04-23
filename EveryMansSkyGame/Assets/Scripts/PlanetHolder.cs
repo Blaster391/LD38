@@ -8,6 +8,9 @@ public class PlanetHolder : MonoBehaviour
     public Planet Planet;
     public TextMesh PlanetText;
 
+    public Material YellowText;
+    public Material GreenText;
+    public Material NormalText;
     public void SetName(string planetName)
     {
         PlanetText.text = planetName;
@@ -17,16 +20,15 @@ public class PlanetHolder : MonoBehaviour
     {
         if (player.PlanetsCreated != null && player.PlanetsCreated.Contains(Planet.Id))
         {
-
-            PlanetText.color = Color.yellow;
+            PlanetText.GetComponent<MeshRenderer>().material = YellowText;
         }
         else if (player.PlanetsDiscovered != null && player.PlanetsDiscovered.Contains(Planet.Id))
         {
-            PlanetText.color = Color.green;
+            PlanetText.GetComponent<MeshRenderer>().material = GreenText;
         }
         else
         {
-            PlanetText.color = Color.white;
+            PlanetText.GetComponent<MeshRenderer>().material = NormalText;
         }
     }
 
