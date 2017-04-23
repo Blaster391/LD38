@@ -27,7 +27,9 @@ public class ScorePanelScript : MonoBehaviour
         {
             var scorecard = Instantiate(ScorecardPrefab);
             scorecard.transform.SetParent(ContentPanel.transform);
-            scorecard.transform.localPosition = new Vector3(100 - 8.5f, 34 + (-62 * rank), 0);
+            var rectTransform = scorecard.GetComponent<RectTransform>();
+            rectTransform.anchoredPosition = new Vector2(0, -25 + (-50 * rank));
+            scorecard.transform.localScale = new Vector3(1,1,1);
 
             bool highlight = PlayerManager.Player.Username == score.PlayerUsername;
 
