@@ -13,6 +13,7 @@ public class PlanetManager : MonoBehaviour {
 	void Start () {
         Player = GameObject.Find("Player").GetComponent<PlayerManager>();
 	    StartCoroutine(PlanetLoaderLoop());
+	    StartCoroutine(PlanetRecentLoadingLoop());
 	}
 	
 
@@ -204,31 +205,49 @@ public class PlanetManager : MonoBehaviour {
     {
         while (true)
         {
-            yield return GetPlanets(DateTime.MinValue, 0);
-            yield return new WaitForSeconds(10);
+            yield return GetPlanets(DateTime.MinValue);
+            yield return new WaitForSeconds(60);
         }
     }
 
-    private IEnumerator GetPlanets(DateTime dateFrom, int page)
+    private DateTime lastFetchTime = DateTime.MinValue;
+    private IEnumerator PlanetRecentLoadingLoop()
     {
-        var encodedDate = WWW.EscapeURL(dateFrom.ToString());
-        Debug.Log(encodedDate);
-        var www = new WWW(WebApiAccess.ApiUrl + "/Planet?dateFrom="+ encodedDate + "&page="+ page);
-        yield return www;
-
-        var jsonList = new JSONObject(www.text);
-        if (jsonList.list != null)
+        while (true)
         {
+            yield return GetPlanets(lastFetchTime);
+            lastFetchTime = DateTime.Now;
+            yield return new WaitForSeconds(5);
+        }
+    }
 
-            foreach (var jsonPlanet in jsonList)
+    private IEnumerator GetPlanets(DateTime dateFrom)
+    {
+        int page = 0;
+        bool finished = false;
+        while (!finished)
+        {
+            var encodedDate = WWW.EscapeURL(dateFrom.ToString());
+            Debug.Log(encodedDate);
+            var www = new WWW(WebApiAccess.ApiUrl + "/Planet?dateFrom=" + encodedDate + "&page=" + page);
+            yield return www;
+
+            var jsonList = new JSONObject(www.text);
+            if (jsonList.list != null)
             {
-                var planet = JsonToPlanet(jsonPlanet);
-                SpawnPlanet(planet);
-                yield return new WaitForEndOfFrame();
+                foreach (var jsonPlanet in jsonList)
+                {
+                    var planet = JsonToPlanet(jsonPlanet);
+                    SpawnPlanet(planet);
+                    yield return new WaitForEndOfFrame();
+                }
+            }
+
+            if (jsonList.list == null || jsonList.list.Count == 0)
+            {
+                finished = true;
             }
         }
-
-
     }
 
     private Planet JsonToPlanet(JSONObject json)
