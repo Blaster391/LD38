@@ -140,11 +140,25 @@ public class PlayerManager : MonoBehaviour
 
 	    if (Player != null)
 	    {
-	        if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                Cursor.visible = true;
+            }
+            if (Input.GetKeyUp(KeyCode.Tab))
+            {
+                Cursor.visible = false;
+            }
+            if (Input.GetKey(KeyCode.Tab))
+            {
+                return;
+            }
+
+            if (Input.GetKeyDown(KeyCode.Space))
 	        {
 	            TogglePlanetCreationMenu();
 	        }
-	        if (!PlanetCreationPanel.activeSelf)
+
+            if (!PlanetCreationPanel.activeSelf)
 	        {
 	            float speed;
 	            if (Input.GetKey(KeyCode.LeftShift))
