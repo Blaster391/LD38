@@ -12,7 +12,7 @@ public class PlayerManager : MonoBehaviour
     public GameObject PlanetCreationPanel;
     public GameObject Crosshair;
     public InputField PlayerUsernameField;
-
+    public InputField PlanetNameField;
     public Player Player;
     public float PlayerBaseSpeed;
     public float PlayerSprintSpeed;
@@ -160,7 +160,10 @@ public class PlayerManager : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.Space))
 	        {
-	            TogglePlanetCreationMenu();
+                if (!PlanetNameField.isFocused)
+                {
+                    TogglePlanetCreationMenu();
+                }
 	        }
 
             if (!PlanetCreationPanel.activeSelf)
@@ -224,6 +227,7 @@ public class PlayerManager : MonoBehaviour
             {
                 if (hit.collider.gameObject.GetComponent<PlanetHolder>() != null)
                 {
+
                     hit.collider.gameObject.GetComponent<PlanetHolder>().DiscoverPlanet(Player);
                 }
             }

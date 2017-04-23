@@ -74,6 +74,11 @@ public class PlanetManager : MonoBehaviour {
     public Slider PlanetColourRedSlider;
     public Slider PlanetColourBlueSlider;
     public Slider PlanetColourGreenSlider;
+
+    public Slider PlanetRotationXSlider;
+    public Slider PlanetRotationYSlider;
+    public Slider PlanetRotationZSlider;
+
     public Slider PlanetSizeSlider;
     public PlayerManager Player;
     public float WorldSizeMod = 10;
@@ -102,6 +107,14 @@ public class PlanetManager : MonoBehaviour {
 
         SpawnPlanet(planet, false);
         SavePlanet(planet);
+        if (Player.Player.PlanetsCreated == null)
+        {
+            Player.Player.PlanetsCreated = new List<string>();
+        }
+        if (!Player.Player.PlanetsCreated.Contains(planet.Id))
+        {
+            Player.Player.PlanetsCreated.Add(planet.Id);
+        }
         PlanetCreationPanel.SetActive(false);
         Cursor.visible = false;
     }
@@ -124,6 +137,8 @@ public class PlanetManager : MonoBehaviour {
             return null;
         }
 
+        var rotation = new Vector3(PlanetRotationXSlider.value * 360, PlanetRotationYSlider.value * 360, PlanetRotationZSlider.value * 360);
+
         var planetType = PlanetType.Basic;
         if (PlanetRingToggle.isOn)
             planetType = PlanetType.Ringed;
@@ -135,6 +150,9 @@ public class PlanetManager : MonoBehaviour {
             PositionX = position.x,
             PositionY = position.y,
             PositionZ = position.z,
+            RotationX = rotation.x,
+            RotationY = rotation.y,
+            RotationZ = rotation.z,
             Size = size,
             ColourRed = color.r,
             ColourGreen = color.g,
@@ -169,6 +187,7 @@ public class PlanetManager : MonoBehaviour {
 
         var position = new Vector3(planet.PositionX, planet.PositionY, planet.PositionZ);
         newPlanet.transform.position = position;
+        newPlanet.transform.eulerAngles = new Vector3(planet.RotationX, planet.RotationY, planet.RotationZ);
 
         var color = new Color
         {
