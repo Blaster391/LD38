@@ -12,10 +12,26 @@ public class PlanetManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         Player = GameObject.Find("Player").GetComponent<PlayerManager>();
-	    StartCoroutine(PlanetLoaderLoop());
-	    StartCoroutine(PlanetRecentLoadingLoop());
+	    StartCoroutine(HeartbeatLoop());
+
 	}
-	
+
+    IEnumerator HeartbeatLoop()
+    {
+        while (true)
+        {
+            try
+            {
+                StartCoroutine(PlanetLoaderLoop());
+                StartCoroutine(PlanetRecentLoadingLoop());
+            }
+            catch{}
+            yield return new WaitForSeconds(120);
+        }
+
+
+    }
+
 
 	// Update is called once per frame
     private GameObject _previewPlanet;
@@ -59,6 +75,19 @@ public class PlanetManager : MonoBehaviour {
                     b = PlanetColourBlueSlider.value,
                     a = 0.5f
                 };
+
+                var position = Player.transform.position + Player.transform.forward * WorldSpawnDistance;
+                if (Physics.CheckSphere(position, previewPlanet.Size))
+	            {
+                    previewColor = new Color
+                    {
+                        r = 1,
+                        g = 0,
+                        b = 0,
+                        a = 0.3f
+                    };
+                }
+
                 planetRenderer.material.color = previewColor;
             }
         }

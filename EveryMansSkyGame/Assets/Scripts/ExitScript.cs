@@ -5,10 +5,13 @@ public class ExitScript : MonoBehaviour
 {
 
     public GameObject ExitMenu;
-	
+
+    void Start()
+    {
+        ExitMenu.SetActive(false);
+    }
 	// Update is called once per frame
 	void Update () {
-        ExitMenu.SetActive(false);
         if (Input.GetKeyUp(KeyCode.Escape))
 	    {
 	        ShowHideExitMenu();
@@ -19,10 +22,12 @@ public class ExitScript : MonoBehaviour
     {
         if (ExitMenu.activeSelf)
         {
+            Cursor.visible = false;
             ExitMenu.SetActive(false);
         }
         else
         {
+            Cursor.visible = true;
             ExitMenu.SetActive(true);
         }
 

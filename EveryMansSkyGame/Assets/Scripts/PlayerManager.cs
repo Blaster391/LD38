@@ -7,8 +7,9 @@ using UnityEngine.UI;
 
 public class PlayerManager : MonoBehaviour
 {
-
+    public GameObject WarningMessage;
     public GameObject PlayerCreationPanel;
+    public GameObject PlayerCreationSubPanel;
     public GameObject PlanetCreationPanel;
     public GameObject Crosshair;
     public InputField PlayerUsernameField;
@@ -87,11 +88,22 @@ public class PlayerManager : MonoBehaviour
         {
             var www = new WWW(WebApiAccess.ApiUrl + "/player/" + id);
             yield return www;
+            try
+            {
+                Player = JsonToPlayer(new JSONObject(www.text));
+            }
+            catch{}
 
-            Player = JsonToPlayer(new JSONObject(www.text));
-            PlayerCreationPanel.SetActive(false);
-            Crosshair.SetActive(true);
-            Cursor.visible = false;
+            if (Player != null)
+            {
+                PlayerCreationPanel.SetActive(false);
+                Crosshair.SetActive(true);
+                Cursor.visible = false;
+            }
+            else
+            {
+                ShowPlayerCreationPanel();
+            }
         }
 
     }
@@ -134,14 +146,30 @@ public class PlayerManager : MonoBehaviour
     {
         if (File.Exists("user.usr"))
         {
-            //TODO SHOW WARNING MESSAGE 
+            WarningMessage.SetActive(true);
+            PlayerCreationSubPanel.SetActive(false);
+        }
+        else
+        {
+            WarningMessage.SetActive(false);
+            PlayerCreationSubPanel.SetActive(true);
         }
         PlayerCreationPanel.SetActive(true);
         Crosshair.SetActive(false);
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    public void ShowCreationSubPanel()
+    {
+        PlayerCreationSubPanel.SetActive(true);
+    }
+
+    public void RetryLoadPlayerFromFile()
+    {
+        StartCoroutine(LoadUserFromFile());
+    }
+
+    // Update is called once per frame
+    void Update () {
 
 	    if (Player != null)
 	    {
