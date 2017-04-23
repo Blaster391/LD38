@@ -10,6 +10,7 @@ public class PlayerManager : MonoBehaviour
 
     public GameObject PlayerCreationPanel;
     public GameObject PlanetCreationPanel;
+    public GameObject Crosshair;
     public InputField PlayerUsernameField;
 
     public Player Player;
@@ -27,6 +28,7 @@ public class PlayerManager : MonoBehaviour
 	{
         PlayerCreationPanel.SetActive(false);
         PlanetCreationPanel.SetActive(false);
+        Crosshair.SetActive(false);
         if (File.Exists("user.usr"))
 	    {
             StartCoroutine(LoadUserFromFile());
@@ -72,6 +74,7 @@ public class PlayerManager : MonoBehaviour
             }
 
             PlayerCreationPanel.SetActive(false);
+            Crosshair.SetActive(true);
             Cursor.visible = false;
         }
     }
@@ -87,6 +90,7 @@ public class PlayerManager : MonoBehaviour
 
             Player = JsonToPlayer(new JSONObject(www.text));
             PlayerCreationPanel.SetActive(false);
+            Crosshair.SetActive(true);
             Cursor.visible = false;
         }
 
@@ -101,8 +105,8 @@ public class PlayerManager : MonoBehaviour
 
         Player player = new Player
         {
-            Id = json["id"].ToString(),
-            Username = json["username"].ToString(),
+            Id = json["id"].ToString().Replace("\"", ""),
+            Username = json["username"].ToString().Replace("\"", ""),
             PlanetsCreated = new List<string>()
         };
 
@@ -110,7 +114,7 @@ public class PlayerManager : MonoBehaviour
         {
             foreach (JSONObject planet in json["planetsCreated"].list)
             {
-                player.PlanetsCreated.Add(planet.ToString());
+                player.PlanetsCreated.Add(planet.ToString().Replace("\"", ""));
             }
         }
 
@@ -119,7 +123,7 @@ public class PlayerManager : MonoBehaviour
             player.PlanetsDiscovered = new List<string>();
             foreach (JSONObject planet in json["planetsDiscovered"].list)
             {
-                player.PlanetsDiscovered.Add(planet.ToString());
+                player.PlanetsDiscovered.Add(planet.ToString().Replace("\"", ""));
             }
         }
 
@@ -133,6 +137,7 @@ public class PlayerManager : MonoBehaviour
             //TODO SHOW WARNING MESSAGE 
         }
         PlayerCreationPanel.SetActive(true);
+        Crosshair.SetActive(false);
     }
 	
 	// Update is called once per frame
@@ -207,9 +212,22 @@ public class PlayerManager : MonoBehaviour
 	    }
 	}
 
+    public float discoverRange;
     private void AttemptDiscoverPlanet()
     {
-        
+        RaycastHit hit;
+        Ray ray = new Ray(transform.position, gameObject.transform.forward);
+        if (Physics.Raycast(ray, out hit))
+        {
+            Debug.Log("Hit");
+            if (hit.distance < discoverRange)
+            {
+                if (hit.collider.gameObject.GetComponent<PlanetHolder>() != null)
+                {
+                    hit.collider.gameObject.GetComponent<PlanetHolder>().DiscoverPlanet(Player);
+                }
+            }
+        }
     }
 
     private void TogglePlanetCreationMenu()
@@ -218,11 +236,13 @@ public class PlayerManager : MonoBehaviour
         {
             PlanetCreationPanel.SetActive(false);
             Cursor.visible = false;
+            Crosshair.SetActive(true);
         }
         else
         {
             PlanetCreationPanel.SetActive(true);
             Cursor.visible = true;
+            Crosshair.SetActive(false);
         }
     }
 }

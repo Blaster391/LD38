@@ -37,8 +37,6 @@ public class ScoreHandler : MonoBehaviour
             yield return wwwDiscovered;
             yield return wwwCreated;
 
-            Debug.Log(wwwDiscovered.text);
-
             var discoveredScores = JsonToScore(new JSONObject(wwwDiscovered.text));
             var createdScores = JsonToScore(new JSONObject(wwwCreated.text));
 
@@ -59,9 +57,9 @@ public class ScoreHandler : MonoBehaviour
             {
                 PlayerScore score = new PlayerScore
                 {
-                    PlayerUsername = scoreJson["playerUsername"].ToString(),
-                    PlanetsCreated = int.Parse(scoreJson["planetsCreated"].ToString()),
-                    PlanetsDiscovered = int.Parse(scoreJson["planetsDiscovered"].ToString())
+                    PlayerUsername = scoreJson["playerUsername"].ToString().Replace("\"", ""),
+                    PlanetsCreated = int.Parse(scoreJson["planetsCreated"].ToString().Replace("\"", "")),
+                    PlanetsDiscovered = int.Parse(scoreJson["planetsDiscovered"].ToString().Replace("\"", ""))
                 };
                 scores.Add(score);
             }

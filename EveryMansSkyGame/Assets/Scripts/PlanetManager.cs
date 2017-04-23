@@ -18,8 +18,15 @@ public class PlanetManager : MonoBehaviour {
 	
 
 	// Update is called once per frame
+    private GameObject _previewPlanet;
 	void Update () {
-	    if (PlanetCreationPanel.activeSelf)
+        if (_previewPlanet != null)
+        {
+            Destroy(_previewPlanet);
+            _previewPlanet = null;
+        }
+
+        if (PlanetCreationPanel.activeSelf)
 	    {
             var color = new Color
             {
@@ -31,6 +38,29 @@ public class PlanetManager : MonoBehaviour {
 
             var previewImage = ColourPickerPreviewPanel.GetComponent<Image>();
             previewImage.color = color;
+
+
+            if (PreviewToggle.isOn)
+	        {
+
+
+	            var previewPlanet = GeneratePlanetObject();
+	            previewPlanet.Id = "PREVIEW";
+                _previewPlanet = SpawnPlanet(previewPlanet, true);
+
+                var planetRenderer = _previewPlanet.GetComponent<Renderer>();
+	            var collider = _previewPlanet.GetComponent<Collider>();
+	            collider.enabled = false;
+
+                var previewColor = new Color
+                {
+                    r = PlanetColourRedSlider.value,
+                    g = PlanetColourGreenSlider.value,
+                    b = PlanetColourBlueSlider.value,
+                    a = 0.5f
+                };
+                planetRenderer.material.color = previewColor;
+            }
         }
     }
     public GameObject PlanetBasicPrefab;
@@ -40,6 +70,7 @@ public class PlanetManager : MonoBehaviour {
     public GameObject ColourPickerPreviewPanel;
     public InputField PlanetNameField;
     public Toggle PlanetRingToggle;
+    public Toggle PreviewToggle;
     public Slider PlanetColourRedSlider;
     public Slider PlanetColourBlueSlider;
     public Slider PlanetColourGreenSlider;
@@ -51,13 +82,34 @@ public class PlanetManager : MonoBehaviour {
     private Dictionary<string,PlanetHolder> PlanetDictionary = new Dictionary<string, PlanetHolder>();
     public void AttemptCreatePlanet()
     {
-        var position = Player.transform.position + Player.transform.forward * WorldSpawnDistance;
         var planetName = PlanetNameField.text;
         if (planetName.Trim() == string.Empty)
             return;
 
-        if (planetName.Length > 140)
+        var planet = GeneratePlanetObject();
+        var position = Player.transform.position + Player.transform.forward * WorldSpawnDistance;
+
+        if (_previewPlanet != null)
+        {
+            Destroy(_previewPlanet);
+            _previewPlanet = null;
+        }
+
+        if (Physics.CheckSphere(position, planet.Size))
+        {
             return;
+        }
+
+        SpawnPlanet(planet, false);
+        SavePlanet(planet);
+        PlanetCreationPanel.SetActive(false);
+        Cursor.visible = false;
+    }
+
+    private Planet GeneratePlanetObject()
+    {
+        var position = Player.transform.position + Player.transform.forward * WorldSpawnDistance;
+        var planetName = PlanetNameField.text;
 
         var color = new Color
         {
@@ -69,7 +121,7 @@ public class PlanetManager : MonoBehaviour {
         var size = PlanetSizeSlider.value * WorldSizeMod;
         if (size < 0.000001)
         {
-            return;
+            return null;
         }
 
         var planetType = PlanetType.Basic;
@@ -91,19 +143,10 @@ public class PlanetManager : MonoBehaviour {
             CreatedByUserId = Player.Player.Id,
             CreatedByUsername = Player.Player.Username
         };
-
-        if (Physics.CheckSphere(position, planet.Size))
-        {
-            return;
-        }
-
-        SpawnPlanet(planet);
-        SavePlanet(planet);
-        PlanetCreationPanel.SetActive(false);
-        Cursor.visible = false;
+        return planet;
     }
 
-    public void SpawnPlanet(Planet planet)
+    public GameObject SpawnPlanet(Planet planet, bool preview)
     {
         if (PlanetDictionary.ContainsKey(planet.Id))
         {
@@ -131,7 +174,8 @@ public class PlanetManager : MonoBehaviour {
         {
             r = planet.ColourRed,
             g = planet.ColourGreen,
-            b = planet.ColourBlue
+            b = planet.ColourBlue,
+            a = 1
         };
 
         newPlanet.transform.localScale = new Vector3(planet.Size, planet.Size, planet.Size);
@@ -149,9 +193,12 @@ public class PlanetManager : MonoBehaviour {
         var planetHolder = newPlanet.GetComponent<PlanetHolder>();
         planetHolder.Planet = planet;
         planetHolder.SetName(planet.Name);
-
-        PlanetDictionary.Add(planet.Id, planetHolder);
-
+        planetHolder.SetTextColour(Player.Player);
+        if (!preview)
+        {
+            PlanetDictionary.Add(planet.Id, planetHolder);
+        }
+        return newPlanet;
     }
 
     private void SavePlanet(Planet planet)
@@ -228,7 +275,6 @@ public class PlanetManager : MonoBehaviour {
         while (!finished)
         {
             var encodedDate = WWW.EscapeURL(dateFrom.ToString());
-            Debug.Log(encodedDate);
             var www = new WWW(WebApiAccess.ApiUrl + "/Planet?dateFrom=" + encodedDate + "&page=" + page);
             yield return www;
 
@@ -238,7 +284,7 @@ public class PlanetManager : MonoBehaviour {
                 foreach (var jsonPlanet in jsonList)
                 {
                     var planet = JsonToPlanet(jsonPlanet);
-                    SpawnPlanet(planet);
+                    SpawnPlanet(planet, false);
                     yield return new WaitForEndOfFrame();
                 }
             }
@@ -252,11 +298,10 @@ public class PlanetManager : MonoBehaviour {
 
     private Planet JsonToPlanet(JSONObject json)
     {
-        Debug.Log(json.ToString());
         var elementObject = json.ToDictionary();
         Planet parsedPlanet = new Planet();
-        parsedPlanet.Id = elementObject["id"];
-        parsedPlanet.Name = elementObject["name"];
+        parsedPlanet.Id = elementObject["id"].Replace("\"","");
+        parsedPlanet.Name = elementObject["name"].Replace("\"", "");
         parsedPlanet.CreatedByUserId = elementObject["createdByUserId"];
         parsedPlanet.CreatedByUsername = elementObject["createdByUsername"];
         
