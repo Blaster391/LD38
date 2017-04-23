@@ -368,6 +368,7 @@ public class PlanetManager : MonoBehaviour {
             {
                 finished = true;
             }
+            page++;
         }
     }
 
