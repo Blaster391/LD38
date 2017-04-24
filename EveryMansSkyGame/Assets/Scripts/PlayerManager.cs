@@ -14,6 +14,7 @@ public class PlayerManager : MonoBehaviour
     public GameObject PlanetCreationPanel;
     public GameObject Crosshair;
     public GameObject ExitMenu;
+    public GameObject StartGameButton;
     public InputField PlayerUsernameField;
     public InputField PlanetNameField;
     public Player Player;
@@ -35,9 +36,12 @@ public class PlayerManager : MonoBehaviour
         PlayerCreationPanel.SetActive(false);
         PlanetCreationPanel.SetActive(false);
         Crosshair.SetActive(false);
+        WarningMessage.SetActive(false);
+        StartGameButton.SetActive(true);
         if (File.Exists("user.usr"))
 	    {
             StartCoroutine(LoadUserFromFile());
+	        return;
 	    }
 
 	    if (Player == null)
@@ -63,7 +67,7 @@ public class PlayerManager : MonoBehaviour
             ErrorText.text = "Name too long";
             return;
         }
-
+        StartGameButton.SetActive(false);
         //Validate fucking swearwords????
         StartCoroutine(CreatePlayer(name));
     }
@@ -106,6 +110,7 @@ public class PlayerManager : MonoBehaviour
     private IEnumerator LoadUserFromFile()
     {
         System.IO.StreamReader file = new System.IO.StreamReader("user.usr");
+        StartGameButton.SetActive(false);
         string id;
         if ((id = file.ReadLine()) != null)
         {
@@ -115,7 +120,10 @@ public class PlayerManager : MonoBehaviour
             {
                 Player = JsonToPlayer(new JSONObject(www.text));
             }
-            catch{}
+            catch
+            {
+                Debug.Log("here");
+            }
 
             if (Player != null)
             {
@@ -125,6 +133,7 @@ public class PlayerManager : MonoBehaviour
             }
             else
             {
+                Debug.Log("here 2");
                 ShowPlayerCreationPanel();
             }
         }
@@ -167,6 +176,7 @@ public class PlayerManager : MonoBehaviour
 
     private void ShowPlayerCreationPanel()
     {
+        StartGameButton.SetActive(true);
         if (File.Exists("user.usr"))
         {
             WarningMessage.SetActive(true);
